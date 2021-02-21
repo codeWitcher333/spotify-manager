@@ -17,7 +17,7 @@ class Track extends Component {
     }
     removeTrack(){
 
-        this.stopMusic();
+        this.clearTimeouts();
         this.props.onRemove(this.props.track);
     }
     showLocalTracks(){
@@ -29,15 +29,27 @@ class Track extends Component {
         if(this.props.listType === 'local')  this.setState({text: txt});
         else if(this.props.track.preview && !this.state.playing){
 
-            window.setTimeout(() => this.state.playing && this.audio.play(),1000);
+            window.setTimeout(() => {
+
+                if(this.state.playing) this.audio.play();
+            },1000);
+
             this.setState({playing: true});
         }
 
     }
+    clearTimeouts(){
+
+        let id = window.setTimeout(function() {}, 0);
+
+        while (id--) {
+            window.clearTimeout(id);
+        }
+    }
     stopMusic(){
 
-        this.audio.pause();
         this.setState({playing: false});
+        this.audio.pause();
     }
     render(){
 

@@ -4,7 +4,7 @@ import SearchBar from '../SearchBar/SearchBar';
 import PlayList from '../PlayList/PlayList';
 import PlaylistList from '../PlaylistList/PlaylistList';
 import SearchResults from '../SearchResults/SearchResults';
-import Spotify from '../util/Spotify';
+import Spotify from '../../util/Spotify';
 
 const App = () => {
 
@@ -15,10 +15,11 @@ const App = () => {
   const [status,setStatus] = useState('');
   const [playlistId,setPlaylistId] = useState('');
 
-  const addTrack = newTrack => playlistTracks.some(addedTrack => addedTrack.id === newTrack.id) || setPlaylistTracks(playlistTracks.concat(newTrack));
+  const addTrack = newTrack => trackAlreadyAdded || setPlaylistTracks(playlistTracks.concat(newTrack));
   const removeTrack = newTrack => setPlaylistTracks(playlistTracks.filter(track => track.id !== newTrack.id));
   const refreshLocalPlaylists = () => Spotify.getPlaylists().then(playlists => setPlaylistList(playlists));
-  const searchTracks = searchTerm => Spotify.searchTracks(searchTerm).then(tracks => setSearchResults(tracks.filter(track => !playlistTracks.some(playTrack => track.id === playTrack.id))));
+  const searchTracks = searchTerm => Spotify.searchTracks(searchTerm).then(tracks => setSearchResults(tracks.filter(track => !trackAlreadyAdded(track))));
+  const trackAlreadyAdded = newTrack => playlistTracks.some(addedTrack => addedTrack.id === newTrack.id);
   const addPlaylistTracks = (playlistId,playlistName) => {
 
     Spotify.getTracks(playlistId)
