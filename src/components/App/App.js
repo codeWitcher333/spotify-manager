@@ -15,7 +15,7 @@ const App = () => {
   const [status,setStatus] = useState('');
   const [playlistId,setPlaylistId] = useState('');
 
-  const addTrack = newTrack => trackAlreadyAdded || setPlaylistTracks(playlistTracks.concat(newTrack));
+  const addTrack = newTrack => trackAlreadyAdded(newTrack) || setPlaylistTracks(playlistTracks.concat(newTrack));
   const removeTrack = newTrack => setPlaylistTracks(playlistTracks.filter(track => track.id !== newTrack.id));
   const refreshLocalPlaylists = () => Spotify.getPlaylists().then(playlists => setPlaylistList(playlists));
   const searchTracks = searchTerm => Spotify.searchTracks(searchTerm).then(tracks => setSearchResults(tracks.filter(track => !trackAlreadyAdded(track))));

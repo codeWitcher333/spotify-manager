@@ -1,10 +1,11 @@
-
 let userAccessToken = '';
 let userId = '';
 let savedPlaylistId = '';
 
-const clientId = '70c76515e8574e038e864f1446c2e939';
-const redirectUrl = 'http://spotifyPlaylistManager.surge.sh';
+const clientId = process.env.REACT_APP_CLIENT_ID;
+if(!clientId) console.log('Correct API Key was not provided');
+
+const redirectUrl = 'localhost:3000/';
 const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-private playlist-modify-public playlist-read-private&redirect_uri=${redirectUrl}`;
 
 
