@@ -3,9 +3,9 @@ let userId = '';
 let savedPlaylistId = '';
 
 const clientId = process.env.REACT_APP_CLIENT_ID;
-if(!clientId) console.log('Correct API Key was not provided');
+if(!clientId) console.log('API Key was not provided');
 
-const redirectUrl = 'localhost:3000/';
+const redirectUrl = 'http://localhost:3000/';
 const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-private playlist-modify-public playlist-read-private&redirect_uri=${redirectUrl}`;
 
 
