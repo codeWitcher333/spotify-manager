@@ -32,7 +32,7 @@ const Spotify = {
                 window.location = authUrl;
             }
 
-        })
+        });
     },
     filterTrackData(track){
 
