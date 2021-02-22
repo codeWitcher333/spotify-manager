@@ -1,4 +1,7 @@
-To make this app work you need to perform the following steps:
+
+You can see already builded app by me here: http://spotifyplaylistmanager.surge.sh/
+
+Alternatively to make this app work you need to perform the following steps:
 
 1. Create an account https://developer.spotify.com/
 2. Create new app using app dashboard https://developer.spotify.com/dashboard/applications
