@@ -1,3 +1,5 @@
+You need to have Spotify account to be able to use this tool as authorization is required.
+
 
 You can see already builded app by me here: http://spotifyplaylistmanager.surge.sh/
 
