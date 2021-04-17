@@ -1,19 +1,23 @@
-import {Component} from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import './PlaylistList.css';
 import TrackList from '../TrackList/TrackList';
 
-class PlaylistList extends Component {
-
-    render(){
-
-        return (
-
-            <div className="PlaylistList">
-                <h2>Local Playlists</h2>
-                <TrackList tracks={this.props.playlistList} listType='local' onLocal={this.props.onLocal} />
-            </div>
-        )
-    }
+class PlaylistList extends PureComponent {
+  render() {
+    const { playlistList, onLocal } = this.props;
+    return (
+      <div className="PlaylistList">
+        <h2>Local Playlists</h2>
+        <TrackList tracks={playlistList} listType="local" onLocal={onLocal} />
+      </div>
+    );
+  }
 }
+
+PlaylistList.propTypes = {
+  onLocal: PropTypes.func.isRequired,
+  playlistList: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 export default PlaylistList;

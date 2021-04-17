@@ -1,75 +1,98 @@
-import {Component} from 'react';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 import './Track.css';
 
-class Track extends Component {
+const Track = (props) => {
+  const { track, listType, onLocal, onAdd, onRemove } = props;
+  const [playing, setPlaying] = useState(false);
+  const [text, setText] = useState('');
+  const [audio] = useState(track.preview ? new Audio(track.preview) : null);
+  const isLocal = listType === 'local';
 
-    state = {
+  const clearTimeouts = () => {
+    let id = window.setTimeout(() => {}, 0);
 
-        text: '',
-        playing: false
-    };
-
-    audio = new Audio(this.props.track.preview);
-
-    addTrack(){
-
-        this.props.onAdd(this.props.track);
+    while (id) {
+      id -= 1;
+      window.clearTimeout(id);
     }
-    removeTrack(){
+  };
 
-        this.clearTimeouts();
-        this.props.onRemove(this.props.track);
-    }
-    showLocalTracks(){
+  const addTrack = () => onAdd(track);
 
-        this.props.onLocal(this.props.track.id,this.props.track.name);
-    }
-    updateTxtOrPlay(txt){
+  const removeTrack = () => {
+    clearTimeouts();
+    onRemove(track);
+  };
 
-        if(this.props.listType === 'local')  this.setState({text: txt});
-        else if(this.props.track.preview && !this.state.playing){
-
-            window.setTimeout(() => {
-
-                if(this.state.playing) this.audio.play();
-            },1000);
-
-            this.setState({playing: true});
+  const showLocalTracks = () => {
+    onLocal(track.id, track.name);
+  };
+  const updateTxtOrPlay = () => {
+    setText(isLocal ? 'edit' : listType === 'add' ? '+' : '-');
+    if (track.preview && !playing) {
+      window.setTimeout(() => {
+        if (!playing) {
+          setPlaying(true);
+          audio.play();
         }
-
+      }, 1000);
     }
-    clearTimeouts(){
+  };
 
-        let id = window.setTimeout(function() {}, 0);
-
-        while (id--) {
-            window.clearTimeout(id);
-        }
+  const updateTxtAndStop = () => {
+    setText('');
+    if (track.preview) {
+      clearTimeouts();
+      audio.pause();
+      setPlaying(false);
     }
-    stopMusic(){
-
-        this.setState({playing: false});
-        this.audio.pause();
+  };
+  const handleClick = () => {
+    if (isLocal) showLocalTracks();
+    else if (listType === 'add') addTrack();
+    else {
+      if (playing) updateTxtAndStop();
+      removeTrack();
     }
-    render(){
+  };
+  return (
 
-        const track = this.props.track;
-        const listType = this.props.listType;
-        const isLocal = listType === 'local';
+    <div className="Track" onMouseEnter={updateTxtOrPlay} onMouseLeave={updateTxtAndStop}>
+      <div className="Track-information">
+        <h3>{track.name}</h3>
+        {isLocal || (
+        <p>
+          {track.artist}
+          |
+          {track.album}
+        </p>
+        )}
+      </div>
+      <button type="button" className="Track-action" onClick={handleClick}>
+        {text}
+      </button>
+    </div>
+  );
+};
 
-        return (
-
-            <div className="Track" onMouseEnter={this.updateTxtOrPlay.bind(this,'edit')} onMouseLeave={this.stopMusic.bind(this)}>
-                <div className="Track-information">
-                    <h3>{track.name}</h3>
-                    {isLocal || <p>{track.artist} | {track.album}</p>}
-                </div>
-                <button className="Track-action" onClick={isLocal?this.showLocalTracks.bind(this):listType === 'add'?this.addTrack.bind(this):this.removeTrack.bind(this)}>
-                    {isLocal?this.state.text:(listType === 'add'?'+':'-')}
-                </button>
-            </div>
-        )
-    }
-}
+Track.propTypes = {
+  listType: PropTypes.string.isRequired,
+  onAdd: PropTypes.func,
+  onLocal: PropTypes.func,
+  onRemove: PropTypes.func,
+  track: PropTypes.shape({
+    album: PropTypes.string,
+    artist: PropTypes.string,
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    preview: PropTypes.string,
+  }).isRequired,
+};
+Track.defaultProps = {
+  onAdd: () => {},
+  onLocal: () => {},
+  onRemove: () => {},
+};
 
 export default Track;

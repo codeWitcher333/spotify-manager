@@ -14,35 +14,35 @@ const App = () => {
   const [status, setStatus] = useState('');
   const [playlistId, setPlaylistId] = useState('');
 
+  const trackAlreadyAdded = (newTrack) => playlistTracks.some((addedTrack) => addedTrack.id === newTrack.id);
   const addTrack = (newTrack) => trackAlreadyAdded(newTrack) || setPlaylistTracks(playlistTracks.concat(newTrack));
   const removeTrack = (newTrack) => setPlaylistTracks(playlistTracks.filter((track) => track.id !== newTrack.id));
   const refreshLocalPlaylists = () => Spotify.getPlaylists().then((playlists) => setPlaylistList(playlists));
   const searchTracks = (searchTerm) => Spotify.searchTracks(searchTerm).then((tracks) => setSearchResults(tracks.filter((track) => !trackAlreadyAdded(track))));
-  const trackAlreadyAdded = (newTrack) => playlistTracks.some((addedTrack) => addedTrack.id === newTrack.id);
 
-  const addPlaylistTracks = (playlistId, playlistName) => {
-    Spotify.getTracks(playlistId).then((tracks) => setPlaylistTracks(tracks))
-      .then(() => setPlaylistName(playlistName))
-      .then(() => setPlaylistId(playlistId));
+  const addPlaylistTracks = (listId, listName) => {
+    Spotify.getTracks(listId).then((tracks) => setPlaylistTracks(tracks))
+      .then(() => setPlaylistName(listName))
+      .then(() => setPlaylistId(listId));
   };
-  const savePlaylist = () => Spotify.savePlaylist(playlistName, playlistId, playlistTracks.map((track) => track.uri))
-    .then((status) => clearState(status))
-    .then(window.setTimeout(refreshLocalPlaylists, 100));
-  const clearState = (status) => {
-    setStatus(status);
+  const clearState = (newStatus) => {
+    setStatus(newStatus);
     setPlaylistName('New Playlist');
     setPlaylistTracks([]);
     setPlaylistId('');
 
     window.setTimeout(() => setStatus(''), 5000);
   };
+  const savePlaylist = () => Spotify.savePlaylist(playlistName, playlistId, playlistTracks.map((track) => track.uri))
+    .then((newStatus) => clearState(newStatus))
+    .then(window.setTimeout(refreshLocalPlaylists, 100));
 
   useEffect(refreshLocalPlaylists, []);
 
   return (
 
     <div>
-      <h1>{'Spotify Manager'.split('').map((l, i) => <span className={i % 2 && 'highlight'}>{l}</span>)}</h1>
+      <h1>{'Spotify Manager'.split('').map((l, i) => <span key={l + i} className={i % 2 && 'highlight'}>{l}</span>)}</h1>
       <div className="App">
         <SearchBar onSearch={searchTracks} />
         <div className="App-info">{status}</div>

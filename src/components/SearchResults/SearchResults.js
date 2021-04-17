@@ -1,19 +1,24 @@
-import {Component} from 'react';
+import PropTypes from 'prop-types';
+import { PureComponent } from 'react';
 import './SearchResults.css';
 import TrackList from '../TrackList/TrackList';
 
-class SearchResults extends Component {
+class SearchResults extends PureComponent {
+  render() {
+    const { searchResults, onAdd } = this.props;
+    return (
 
-    render(){
-
-        return (
-
-            <div className="SearchResults">
-                <h2>Results</h2>
-                <TrackList tracks={this.props.searchResults} listType='add' onAdd={this.props.onAdd} />
-            </div>
-        )
-    }
+      <div className="SearchResults">
+        <h2>Results</h2>
+        <TrackList tracks={searchResults} listType="add" onAdd={onAdd} />
+      </div>
+    );
+  }
 }
+
+SearchResults.propTypes = {
+  onAdd: PropTypes.func.isRequired,
+  searchResults: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 export default SearchResults;
