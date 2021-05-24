@@ -13,10 +13,10 @@ class SearchBar extends React.Component {
     document.addEventListener('keydown', this.eventHandler.bind(this));
   }
 
-  handleTermChange(e) {
-    const newVal = e.target.value;
-    this.setState({ searchTerm: newVal });
-  }
+  // handleTermChange(e) {
+  //   const newVal = e.target.value;
+  //   this.setState({ searchTerm: newVal });
+  // }
 
   search() {
     const { onSearch } = this.props;
@@ -26,17 +26,19 @@ class SearchBar extends React.Component {
   }
 
   eventHandler({ key }) {
-    const pressedKey = String(key);
-    if (pressedKey === 'Enter') this.search();
-    else {
-      const inputEl = this.inputRef.current;
+    const inputEl = this.inputRef.current;
 
-      if (pressedKey === 'Backspace') {
-        inputEl.value = inputEl.value.substring(0, inputEl.value.length - 1);
-      } else {
-        inputEl.value += pressedKey;
+    if (document.activeElement !== inputEl) {
+      const pressedKey = String(key);
+      if (pressedKey === 'Enter') this.search();
+      else {
+        if (pressedKey === 'Backspace') {
+          inputEl.value = inputEl.value.substring(0, inputEl.value.length - 1);
+        } else if (pressedKey.length === 1) {
+          inputEl.value += pressedKey;
+        }
+        this.setState({ searchTerm: inputEl.value });
       }
-      this.setState({ searchTerm: inputEl.value });
     }
   }
 
@@ -44,7 +46,7 @@ class SearchBar extends React.Component {
     return (
 
       <div className="SearchBar">
-        <input ref={this.inputRef} placeholder="Enter A Song, Album, or Artist" onChange={this.handleTermChange.bind(this)} />
+        <input ref={this.inputRef} placeholder="Enter A Song, Album, or Artist" />
         <button type="button" className="SearchButton" onClick={this.search.bind(this)}>SEARCH</button>
       </div>
     );
